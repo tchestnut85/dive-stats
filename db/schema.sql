@@ -12,3 +12,11 @@ CREATE TABLE certifications (
   minimum_age UNSIGNED,
   required_hours UNSIGNED
 );
+
+CREATE TABLE divers (
+  id SERIAL PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  is_instructor BOOLEAN DEFAULT FALSE NOT NULL,
+  certification_id INTEGER REFERENCES certifications(id) ON DELETE SET NULL
+);
