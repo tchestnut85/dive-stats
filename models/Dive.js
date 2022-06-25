@@ -14,6 +14,15 @@ class Dive {
       ORDER BY dive_count DESC LIMIT 1`
 		);
 	}
+
+	create({ depth, duration, diver_id, location_id }) {
+		return db.query(
+			`INSERT INTO dives (depth, duration, diver_id, location_id)
+			VALUES ($1, $2, $3, $4)
+		RETURNING *`,
+			[depth, duration, diver_id, location_id]
+		);
+	}
 }
 
 module.exports = new Dive();

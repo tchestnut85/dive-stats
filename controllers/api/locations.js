@@ -2,23 +2,29 @@ const router = require('express').Router();
 
 const { Location } = require('../../models');
 
+const {
+	getOne,
+	getAll,
+	create,
+	getAverageTime,
+	getMaxDepth,
+	getCertification,
+} = Location;
+
 router.get('/', async (req, res) => {
-	const { rows } = await Location.getAll();
+	const { rows } = await getAll();
 	res.json(rows);
 });
 
 router.get('/:id', async (req, res) => {
-	const { rows } = await Location.getOne({ id: req.params.id });
+	const { rows } = await getOne({ id: req.params.id });
 
 	res.json(rows[0] || {});
 });
 
 router.get('/:id/stats', async (req, res) => {
-	const { getAverageTime, getMaxDepth, getCertification } = Location;
 	const { data } = req.query;
 	const { id } = req.params;
-
-	// let rows;
 
 	const options = {
 		duration: getAverageTime,
@@ -34,9 +40,17 @@ router.get('/:id/stats', async (req, res) => {
 		return;
 	}
 
-	// ({ rows } = await options[data]({ id }));
 	const { rows } = await options[data]({ id });
 	res.json(rows[0]);
+});
+
+router.post('/', async ({ body }, res) => {
+	try {
+		const { rows } = await create(body);
+		res.json(rows[0]);
+	} catch (err) {
+		res.status(500).json(err);
+	}
 });
 
 module.exports = router;
